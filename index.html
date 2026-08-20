@@ -6,228 +6,106 @@
   <title>ইসলামিক ফাউন্ডেশন - অনুদান পোর্টাল</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
   
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics-compat.js"></script>
 
   <style>
     :root {
       --bg-color: #f3f5f4;
-      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-bg: #ffffff;
       --primary: #0a3225;
       --primary-light: #134e3b;
       --gold: #d4af37;
       --gold-light: #fef9e7;
-      --accent: #d32f2f;
       --text-main: #111827;
       --text-muted: #6b7280;
       --shadow-app: 0 10px 30px rgba(10, 50, 37, 0.08);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; -webkit-tap-highlight-color: transparent; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
     body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
 
-    .app-viewport {
-      width: 100%;
-      max-width: 480px;
-      background: var(--bg-color);
-      min-height: 100vh;
-      position: relative;
-      box-shadow: 0 0 50px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-    }
+    .app-viewport { width: 100%; max-width: 480px; background: var(--bg-color); min-height: 100vh; display: flex; flex-direction: column; }
+    .app-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 2rem 1.5rem 1.5rem; border-radius: 0 0 24px 24px; }
+    .header-title { font-size: 1.3rem; font-weight: 700; }
+    .header-sub { font-size: 0.8rem; color: #a3e635; opacity: 0.9; }
 
-    .app-header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: white;
-      padding: 2.5rem 1.5rem 2rem;
-      border-radius: 0 0 28px 28px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-app);
-    }
+    .live-counter-card { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(10px); padding: 0.8rem 1rem; border-radius: 14px; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
 
-    .app-header::after {
-      content: '﷽';
-      position: absolute;
-      right: 10px;
-      bottom: -15px;
-      font-size: 5rem;
-      opacity: 0.08;
-      color: var(--gold);
-    }
+    .app-content { padding: 1rem 1rem 4rem; flex: 1; }
+    .app-card { background: var(--card-bg); border-radius: 16px; padding: 1.2rem; box-shadow: var(--shadow-app); margin-bottom: 1rem; border: 1px solid #e5e7eb; }
 
-    .header-title { font-size: 1.4rem; font-weight: 700; color: #ffffff; }
-    .header-sub { font-size: 0.85rem; color: #a3e635; opacity: 0.9; margin-top: 2px; }
+    .form-group { margin-bottom: 0.9rem; }
+    .form-group label { font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; display: block; }
+    .app-input { width: 100%; padding: 0.8rem 0.9rem; font-size: 0.9rem; border: 1.5px solid #e5e7eb; border-radius: 10px; outline: none; }
+    .app-input:focus { border-color: var(--primary); }
 
-    .live-counter-card {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 0.8rem 1rem;
-      border-radius: 16px;
-      margin-top: 1.2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .btn-app { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; font-size: 0.95rem; font-weight: 600; padding: 0.85rem; border: none; border-radius: 12px; cursor: pointer; }
 
-    .app-content { padding: 1.2rem 1.2rem 5rem; flex: 1; }
-
-    .app-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 1.4rem;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: var(--shadow-app);
-      margin-bottom: 1.2rem;
-    }
-
-    .ayat-box {
-      border-left: 3px solid var(--gold);
-      background: var(--gold-light);
-      padding: 0.8rem 1rem;
-      border-radius: 0 12px 12px 0;
-      font-size: 0.85rem;
-      color: #554100;
-      margin-bottom: 1.2rem;
-    }
-
-    .form-group { margin-bottom: 1.1rem; }
-    .form-group label { font-size: 0.82rem; font-weight: 600; color: var(--text-main); margin-bottom: 6px; display: block; }
-    
-    .app-input {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      font-size: 0.95rem;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 12px;
-      background: #fafafa;
-      outline: none;
-      transition: all 0.25s ease;
-    }
-
-    .app-input:focus {
-      border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 4px rgba(10, 50, 37, 0.1);
-    }
-
-    .checkbox-container {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-
-    .btn-app {
-      width: 100%;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: #ffffff;
-      font-size: 1rem;
-      font-weight: 600;
-      padding: 0.95rem;
-      border: none;
-      border-radius: 14px;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(10, 50, 37, 0.25);
-      transition: all 0.2s ease;
-    }
-
-    .btn-app:active { transform: scale(0.98); }
-
-    .feed-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f3f4f6;
-      animation: slideDown 0.4s ease;
-    }
+    .feed-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #f3f4f6; }
     .feed-item:last-child { border-bottom: none; }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .amount-badge {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--primary);
-      background: #e8f5e9;
-      padding: 4px 10px;
-      border-radius: 20px;
-    }
+    .amount-badge { font-size: 0.95rem; font-weight: 700; color: var(--primary); background: #e8f5e9; padding: 4px 10px; border-radius: 20px; }
+    
+    .status-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+    .status-approved { background: #dcfce7; color: #15803d; }
+    .status-pending { background: #fef3c7; color: #b45309; }
   </style>
 </head>
 <body>
 
   <div class="app-viewport">
-    
     <header class="app-header">
       <div class="header-title">ইসলামিক ফাউন্ডেশন ফান্ড</div>
       <div class="header-sub">১০০% আমানাহ ও রিয়েল-টাইম ট্র্যাকিং</div>
-
       <div class="live-counter-card">
-        <span style="font-size: 0.85rem; opacity: 0.9;">সর্বমোট সংগ্রহ:</span>
+        <span style="font-size: 0.85rem;">সর্বমোট অনুমোদিত সংগ্রহ:</span>
         <strong style="font-size: 1.2rem; color: var(--gold);" id="totalAmountCounter">৳ ০</strong>
       </div>
     </header>
 
     <main class="app-content">
       
-      <div class="ayat-box">
-        "তোমরা যা কিছু ব্যয় করবে, তিনি তার প্রতিদান দেবেন।" — (সূরা সাবা: ৩৯)
+      <!-- Track Donation Box -->
+      <div class="app-card" style="background: var(--gold-light); border: 1px solid #fef08a;">
+        <h3 style="font-size: 0.95rem; color: #854d0e; margin-bottom: 0.5rem; font-weight: 700;">🔍 আপনার অনুদান ট্র্যাক করুন</h3>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="trackInput" class="app-input" placeholder="আপনার Full TrxID বা নম্বর দিন">
+          <button style="background: var(--primary); color: white; border: none; padding: 0 1rem; border-radius: 10px; font-weight: 600;" onclick="trackDonation()">খুঁজুন</button>
+        </div>
+        <div id="trackResult" style="margin-top: 0.8rem;"></div>
       </div>
 
+      <!-- Donation Form -->
       <div class="app-card">
-        <h3 style="font-size: 1.1rem; color: var(--primary); margin-bottom: 1rem; font-weight: 700;">অনুদান জমা দিন</h3>
-        
+        <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem; font-weight: 700;">অনুদানের তথ্য জমা দিন</h3>
         <form id="donationForm">
           <div class="form-group">
             <label>আপনার নাম</label>
-            <input type="text" id="donorName" class="app-input" placeholder="আপনার নাম লিখুন">
-            <label class="checkbox-container">
-              <input type="checkbox" id="isAnon"> নাম গোপন রাখুন (বেনামী দান)
+            <input type="text" id="donorName" class="app-input" placeholder="নাম লিখুন">
+            <label style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block;">
+              <input type="checkbox" id="isAnon"> বেনামী হিসেবে রাখতে টিক দিন
             </label>
           </div>
-
           <div class="form-group">
             <label>অনুদানের পরিমাণ (টাকা)</label>
             <input type="number" id="amount" class="app-input" placeholder="৳ ৫০০" required>
           </div>
-
           <div class="form-group">
-            <label>মোবাইল নম্বর (শেষ ৪ ডিজিট জনসমক্ষে দেখাবে)</label>
+            <label>মোবাইল নম্বর</label>
             <input type="tel" id="phone" class="app-input" placeholder="017XXXXXXXX" required>
           </div>
-
           <div class="form-group">
             <label>ট্রানজেকশন আইডি (TrxID)</label>
             <input type="text" id="trxid" class="app-input" placeholder="উদা: BKG9876543" required>
           </div>
-
-          <button type="submit" class="btn-app" id="submitBtn">
-            <span>অনুদান নিশ্চিত করুন</span>
-          </button>
+          <button type="submit" class="btn-app" id="submitBtn">অনুদান জমা দিন</button>
         </form>
       </div>
 
+      <!-- Approved Feed -->
       <div class="app-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
-          <h3 style="font-size: 1.05rem; color: var(--primary); font-weight: 700;">লাইভ অনুদান বোর্ড</h3>
-          <span style="background: #fee2e2; color: var(--accent); font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 12px;">LIVE</span>
-        </div>
-
-        <div id="liveFeed">
-          <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">ডাটা কানেক্ট হচ্ছে...</p>
-        </div>
+        <h3 style="font-size: 1rem; color: var(--primary); font-weight: 700; margin-bottom: 0.8rem;">অনুমোদিত লাইভ বোর্ড</h3>
+        <div id="liveFeed"></div>
       </div>
 
     </main>
@@ -240,60 +118,40 @@
       projectId: "islamic-foundation-ff85c",
       storageBucket: "islamic-foundation-ff85c.firebasestorage.app",
       messagingSenderId: "1056969955210",
-      appId: "1:1056969955210:web:a934896af07a156bb15a73",
-      measurementId: "G-11S40WNW5Z"
+      appId: "1:1056969955210:web:a934896af07a156bb15a73"
     };
 
     firebase.initializeApp(firebaseConfig);
-    firebase.analytics();
     const db = firebase.firestore();
 
-    const isAnonCheck = document.getElementById('isAnon');
-    const donorNameInput = document.getElementById('donorName');
-    
-    isAnonCheck.addEventListener('change', () => {
-      if (isAnonCheck.checked) {
-        donorNameInput.value = '';
-        donorNameInput.disabled = true;
-        donorNameInput.placeholder = 'বেনামী হিসেবে জমা হবে';
-      } else {
-        donorNameInput.disabled = false;
-        donorNameInput.placeholder = 'আপনার নাম লিখুন';
-      }
+    // Anonymous name handle
+    document.getElementById('isAnon').addEventListener('change', (e) => {
+      const nameInput = document.getElementById('donorName');
+      nameInput.disabled = e.target.checked;
+      nameInput.value = e.target.checked ? 'বেনামী অনুদানকারী' : '';
     });
 
-    function maskData(phone, trxid) {
-      const maskedPhone = phone.length >= 4 ? `****${phone.slice(-4)}` : phone;
-      const maskedTrxId = trxid.length >= 5 ? `****${trxid.slice(-5)}` : trxid;
-      return { maskedPhone, maskedTrxId };
-    }
-
+    // Form Submission
     document.getElementById('donationForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
-      btn.innerText = 'প্রসেসিং...';
 
       const rawTrxId = document.getElementById('trxid').value.trim().toUpperCase();
       const phone = document.getElementById('phone').value.trim();
-      let name = document.getElementById('donorName').value.trim();
-      const isAnon = isAnonCheck.checked;
+      let name = document.getElementById('donorName').value.trim() || 'বেনামী অনুদানকারী';
       const amount = Number(document.getElementById('amount').value);
 
-      if (isAnon || !name) {
-        name = 'বেনামী অনুদানকারী';
-      }
-
-      const { maskedPhone, maskedTrxId } = maskData(phone, rawTrxId);
+      const maskedPhone = phone.length >= 4 ? `****${phone.slice(-4)}` : phone;
+      const maskedTrxId = rawTrxId.length >= 5 ? `****${rawTrxId.slice(-5)}` : rawTrxId;
 
       try {
         const trxRef = db.collection('used_trxids').doc(rawTrxId);
         const trxDoc = await trxRef.get();
 
         if (trxDoc.exists) {
-          alert('এই TrxID টি ইতোমধ্যে ব্যবহার করা হয়েছে!');
+          alert('এই TrxID টি দিয়ে আগেই অনুদান জমা দেওয়া হয়েছে!');
           btn.disabled = false;
-          btn.innerText = 'অনুদান নিশ্চিত করুন';
           return;
         }
 
@@ -305,57 +163,88 @@
           maskedPhone: maskedPhone,
           maskedTrxId: maskedTrxId,
           fullTrxId: rawTrxId,
+          rawPhone: phone,
           status: 'pending',
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert('ধন্যবাদ! আপনার তথ্য সফলভাবে জমা হয়েছে। যাচাই শেষে লাইভ লিস্টে যুক্ত হবে।');
+        alert('ধন্যবাদ! আপনার অনুদানটি সেভ হয়েছে। এডমিন যাচাই করে এপ্রুভ করার পর লাইভ বোর্ডে দেখাবে।');
         document.getElementById('donationForm').reset();
-        donorNameInput.disabled = false;
-      } catch (error) {
-        alert('সমস্যা হয়েছে, অনুগ্রহ করে আবার চেষ্টা করুন।');
-        console.error(error);
+      } catch (err) {
+        alert('সমস্যা হয়েছে, পরে চেষ্টা করুন।');
       } finally {
         btn.disabled = false;
-        btn.innerText = 'অনুদান নিশ্চিত করুন';
       }
     });
 
+    // Track Donation
+    async function trackDonation() {
+      const queryVal = document.getElementById('trackInput').value.trim().toUpperCase();
+      const resultDiv = document.getElementById('trackResult');
+
+      if (!queryVal) {
+        resultDiv.innerHTML = '<span style="color:red; font-size:0.8rem;">TrxID বা নম্বর লিখুন।</span>';
+        return;
+      }
+
+      resultDiv.innerHTML = 'খোঁজা হচ্ছে...';
+
+      let snapshot = await db.collection('donations').where('fullTrxId', '==', queryVal).get();
+      if (snapshot.empty) {
+        snapshot = await db.collection('donations').where('rawPhone', '==', queryVal).get();
+      }
+
+      if (snapshot.empty) {
+        resultDiv.innerHTML = '<span style="color:#b91c1c; font-size:0.85rem;">কোনো ডাটা পাওয়া যায়নি!</span>';
+        return;
+      }
+
+      let html = '';
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const badgeClass = data.status === 'approved' ? 'status-approved' : 'status-pending';
+        const statusTxt = data.status === 'approved' ? 'অনুমোদিত (Approved)' : 'যাচাইধীন (Pending)';
+
+        html += `
+          <div style="background: white; padding: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #e2e8f0; margin-top: 5px;">
+            <div><strong>নাম:</strong> ${data.name} | <strong>টাকা:</strong> ৳${data.amount}</div>
+            <div style="margin-top: 4px;"><strong>স্ট্যাটাস:</strong> <span class="status-badge ${badgeClass}">${statusTxt}</span></div>
+          </div>
+        `;
+      });
+      resultDiv.innerHTML = html;
+    }
+
+    // Live Approved Board
     db.collection('donations')
       .where('status', '==', 'approved')
       .orderBy('timestamp', 'desc')
       .onSnapshot((snapshot) => {
         const liveFeed = document.getElementById('liveFeed');
-        let totalSum = 0;
+        let total = 0;
 
         if (snapshot.empty) {
-          liveFeed.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 1rem;">এখনো কোনো অনুমোদিত অনুদান নেই।</p>';
+          liveFeed.innerHTML = '<p style="text-align:center; font-size:0.85rem; color: var(--text-muted);">কোনো অনুমোদিত অনুদান নেই।</p>';
           document.getElementById('totalAmountCounter').innerText = '৳ ০';
           return;
         }
 
         liveFeed.innerHTML = '';
-        snapshot.forEach((doc) => {
+        snapshot.forEach(doc => {
           const data = doc.data();
-          totalSum += data.amount || 0;
-
-          const item = document.createElement('div');
-          item.className = 'feed-item';
-          item.innerHTML = `
-            <div>
-              <strong style="font-size: 0.95rem; color: var(--text-main);">${data.name}</strong>
-              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
-                মোবাইল: ${data.maskedPhone} | TrxID: ${data.maskedTrxId}
+          total += data.amount || 0;
+          liveFeed.innerHTML += `
+            <div class="feed-item">
+              <div>
+                <strong>${data.name}</strong>
+                <div style="font-size:0.75rem; color:var(--text-muted);">TrxID: ${data.maskedTrxId}</div>
               </div>
+              <div class="amount-badge">৳ ${data.amount}</div>
             </div>
-            <div class="amount-badge">৳ ${data.amount}</div>
           `;
-          liveFeed.appendChild(item);
         });
-
-        document.getElementById('totalAmountCounter').innerText = `৳ ${totalSum.toLocaleString('bn-BD')}`;
+        document.getElementById('totalAmountCounter').innerText = `৳ ${total.toLocaleString('bn-BD')}`;
       });
   </script>
 </body>
-        </html>
-
+</html>
