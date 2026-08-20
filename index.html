@@ -38,7 +38,6 @@
     .app-content { padding: 1rem 1rem 4rem; flex: 1; }
     .app-card { background: var(--card-bg); border-radius: 16px; padding: 1.2rem; box-shadow: var(--shadow-app); margin-bottom: 1rem; border: 1px solid #e5e7eb; }
 
-    /* Payment Card Style */
     .payment-card {
       background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%);
       border: 1.5px solid #fbcfe8;
@@ -129,14 +128,14 @@
 
     <main class="app-content">
       
-      <!-- Islamic Success Message Card -->
+      <!-- Success Message -->
       <div id="successMsgCard" class="success-box">
         <h4>جَزَاكَ ٱللَّٰهُ خَيْرًا (জাজাকাল্লাহু খাইরান)</h4>
         <p>আল্লাহ তাআলা আপনার এই দানকে কবুল করুন, আপনার রিজিক ও হায়াতে বরকত দান করুন এবং এটিকে পরকালের জন্য নাজাতের অসিলা বানিয়ে দিন। আমিন।</p>
         <p style="font-size: 0.78rem; margin-top: 8px; color: #a16207;"><strong>স্ট্যাটাস:</strong> এডমিন যাচাই করার পর এটি লাইভ বোর্ডে যুক্ত হবে।</p>
       </div>
 
-      <!-- Live Search & Tracking Box -->
+      <!-- Tracking Box -->
       <div class="app-card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
         <h3 style="font-size: 0.95rem; color: var(--primary); margin-bottom: 0.5rem; font-weight: 700;">🔍 অনুদান ট্র্যাকিং করুন</h3>
         <div style="display: flex; gap: 6px;">
@@ -146,7 +145,7 @@
         <div id="trackResult" style="margin-top: 0.8rem;"></div>
       </div>
 
-      <!-- Payment Method Card -->
+      <!-- Payment Method -->
       <div class="payment-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <div>
@@ -162,7 +161,7 @@
         <p style="font-size: 0.75rem; color: #9f1239; margin-top: 6px;">* উপরের নম্বরে Send Money করার পর নিচে অনুদানের তথ্য জমা দিন।</p>
       </div>
 
-      <!-- Donation Input Form -->
+      <!-- Donation Form -->
       <div class="app-card">
         <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem; font-weight: 700;">অনুদানের তথ্য জমা দিন</h3>
         <form id="donationForm">
@@ -211,14 +210,12 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Copy Payment Number Logic
     function copyNumber() {
       const num = document.getElementById('payNumber').innerText;
       navigator.clipboard.writeText(num);
       alert('নম্বর কপি করা হয়েছে: ' + num);
     }
 
-    // Anonymous checkbox logic
     document.getElementById('isAnon').addEventListener('change', (e) => {
       const nameInput = document.getElementById('donorName');
       nameInput.disabled = e.target.checked;
@@ -262,7 +259,6 @@
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        // Display Islamic Message
         document.getElementById('successMsgCard').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -274,7 +270,7 @@
       }
     });
 
-    // Track Donation
+    // Track Donation (Fixed Async Query)
     async function trackDonation() {
       const queryVal = document.getElementById('trackInput').value.trim().toUpperCase();
       const resultDiv = document.getElementById('trackResult');
@@ -286,36 +282,39 @@
 
       resultDiv.innerHTML = 'খোঁজা হচ্ছে...';
 
-      let snapshot = await db.collection('donations').where('fullTrxId', '==', queryVal).get();
-      if (snapshot.empty) {
-        snapshot = await db.collection('donations').where('rawPhone', '==', queryVal).get();
+      try {
+        let snapshot = await db.collection('donations').where('fullTrxId', '==', queryVal).get();
+        if (snapshot.empty) {
+          snapshot = await db.collection('donations').where('rawPhone', '==', queryVal).get();
+        }
+
+        if (snapshot.empty) {
+          resultDiv.innerHTML = '<span style="color:#b91c1c; font-size:0.85rem;">কোনো তথ্য পাওয়া যায়নি!</span>';
+          return;
+        }
+
+        let html = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const badgeClass = data.status === 'approved' ? 'status-approved' : 'status-pending';
+          const statusTxt = data.status === 'approved' ? 'অনুমোদিত (Approved)' : 'যাচাইধীন (Pending)';
+
+          html += `
+            <div style="background: white; padding: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #e2e8f0; margin-top: 5px;">
+              <div><strong>নাম:</strong> ${data.name} | <strong>টাকা:</strong> ৳${data.amount}</div>
+              <div style="margin-top: 4px;"><strong>স্ট্যাটাস:</strong> <span class="status-badge ${badgeClass}">${statusTxt}</span></div>
+            </div>
+          `;
+        });
+        resultDiv.innerHTML = html;
+      } catch (err) {
+        resultDiv.innerHTML = '<span style="color:red; font-size:0.8rem;">খোঁজার সময় সমস্যা হয়েছে।</span>';
       }
-
-      if (snapshot.empty) {
-        resultDiv.innerHTML = '<span style="color:#b91c1c; font-size:0.85rem;">কোনো তথ্য পাওয়া যায়নি!</span>';
-        return;
-      }
-
-      let html = '';
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const badgeClass = data.status === 'approved' ? 'status-approved' : 'status-pending';
-        const statusTxt = data.status === 'approved' ? 'অনুমোদিত (Approved)' : 'যাচাইধীন (Pending)';
-
-        html += `
-          <div style="background: white; padding: 8px; border-radius: 8px; font-size: 0.85rem; border: 1px solid #e2e8f0; margin-top: 5px;">
-            <div><strong>নাম:</strong> ${data.name} | <strong>টাকা:</strong> ৳${data.amount}</div>
-            <div style="margin-top: 4px;"><strong>স্ট্যাটাস:</strong> <span class="status-badge ${badgeClass}">${statusTxt}</span></div>
-          </div>
-        `;
-      });
-      resultDiv.innerHTML = html;
     }
 
-    // Real-Time Live Feed & Counters
+    // Real-Time Live Feed & Daily Counters (Fixed Ordering)
     db.collection('donations')
       .where('status', '==', 'approved')
-      .orderBy('timestamp', 'desc')
       .onSnapshot((snapshot) => {
         const liveFeed = document.getElementById('liveFeed');
         let totalSum = 0;
@@ -331,31 +330,41 @@
           return;
         }
 
-        liveFeed.innerHTML = '';
+        let items = [];
         snapshot.forEach(doc => {
           const data = doc.data();
+          items.push(data);
+          
           const amt = data.amount || 0;
           totalSum += amt;
 
           if (data.timestamp && data.timestamp.toDate() >= startOfToday) {
             dailySum += amt;
           }
+        });
 
+        // Client side sort (Avoids Firestore Indexing Block)
+        items.sort((a, b) => (b.timestamp ? b.timestamp.seconds : 0) - (a.timestamp ? a.timestamp.seconds : 0));
+
+        liveFeed.innerHTML = '';
+        items.forEach(data => {
           liveFeed.innerHTML += `
             <div class="feed-item">
               <div>
                 <strong>${data.name}</strong>
                 <div style="font-size:0.75rem; color:var(--text-muted);">TrxID: ${data.maskedTrxId}</div>
               </div>
-              <div class="amount-badge">৳ ${amt}</div>
+              <div class="amount-badge">৳ ${data.amount}</div>
             </div>
           `;
         });
 
         document.getElementById('totalAmountCounter').innerText = `৳ ${totalSum.toLocaleString('bn-BD')}`;
         document.getElementById('dailyAmountCounter').innerText = `৳ ${dailySum.toLocaleString('bn-BD')}`;
+      }, (err) => {
+        console.error(err);
       });
   </script>
 </body>
-              </html>
-            
+  </html>
+  
