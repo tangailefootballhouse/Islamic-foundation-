@@ -15,7 +15,6 @@
       --bg-color: #f3f5f4;
       --card-bg: #ffffff;
       --primary: #0a3225;
-      --primary-light: #134e3b;
       --text-main: #111827;
       --text-muted: #6b7280;
     }
@@ -46,7 +45,7 @@
 
   <div class="app-viewport">
     
-    <!-- Login Form -->
+    <!-- Login Screen -->
     <div id="loginScreen" class="login-card">
       <h3 style="color: var(--primary); text-align: center; margin-bottom: 1rem;">এডমিন প্যানেল লগইন</h3>
       <form id="loginForm">
@@ -58,14 +57,14 @@
       </form>
     </div>
 
-    <!-- Dashboard -->
+    <!-- Admin Dashboard Screen -->
     <div id="dashboardScreen" style="display: none;">
       <div class="admin-header">
         <div><strong>এডমিন ড্যাশবোর্ড</strong></div>
-        <button style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;" onclick="auth.signOut()">লগআউট</button>
+        <button style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;" onclick="auth.signOut()">লগআউট</button>
       </div>
 
-      <!-- Navigation Tabs -->
+      <!-- Tabs -->
       <div class="tab-group">
         <button class="tab-btn active" id="tabPending" onclick="switchTab('pending')">Pending</button>
         <button class="tab-btn" id="tabApproved" onclick="switchTab('approved')">Approved</button>
@@ -177,5 +176,5 @@
     }
   </script>
 </body>
-  </html>
-  
+        </html>
+        
