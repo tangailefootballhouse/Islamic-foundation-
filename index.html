@@ -26,11 +26,14 @@
     body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; }
 
     .app-viewport { width: 100%; max-width: 480px; background: var(--bg-color); min-height: 100vh; display: flex; flex-direction: column; }
-    .app-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 2rem 1.5rem 1.5rem; border-radius: 0 0 24px 24px; }
+    .app-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 2rem 1.2rem 1.5rem; border-radius: 0 0 24px 24px; text-align: center; }
     .header-title { font-size: 1.3rem; font-weight: 700; }
-    .header-sub { font-size: 0.8rem; color: #a3e635; opacity: 0.9; }
+    .header-sub { font-size: 0.8rem; color: #a3e635; opacity: 0.9; margin-top: 2px; }
 
-    .live-counter-card { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(10px); padding: 0.8rem 1rem; border-radius: 14px; margin-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    .counter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
+    .counter-card { background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(10px); padding: 0.7rem 0.8rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); }
+    .counter-label { font-size: 0.75rem; color: #e2e8f0; display: block; margin-bottom: 2px; }
+    .counter-value { font-size: 1.1rem; font-weight: 700; color: var(--gold); }
 
     .app-content { padding: 1rem 1rem 4rem; flex: 1; }
     .app-card { background: var(--card-bg); border-radius: 16px; padding: 1.2rem; box-shadow: var(--shadow-app); margin-bottom: 1rem; border: 1px solid #e5e7eb; }
@@ -42,6 +45,20 @@
 
     .btn-app { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; font-size: 0.95rem; font-weight: 600; padding: 0.85rem; border: none; border-radius: 12px; cursor: pointer; }
 
+    /* Success Modal / Message Box */
+    .success-box {
+      display: none;
+      background: var(--gold-light);
+      border: 1.5px solid var(--gold);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      animation: fadeIn 0.5s ease;
+    }
+    .success-box h4 { color: #854d0e; font-size: 1.1rem; margin-bottom: 0.4rem; }
+    .success-box p { font-size: 0.88rem; color: #713f12; line-height: 1.5; }
+
     .feed-item { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 0; border-bottom: 1px solid #f3f4f6; }
     .feed-item:last-child { border-bottom: none; }
     .amount-badge { font-size: 0.95rem; font-weight: 700; color: var(--primary); background: #e8f5e9; padding: 4px 10px; border-radius: 20px; }
@@ -49,6 +66,7 @@
     .status-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
     .status-approved { background: #dcfce7; color: #15803d; }
     .status-pending { background: #fef3c7; color: #b45309; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -57,32 +75,46 @@
     <header class="app-header">
       <div class="header-title">ইসলামিক ফাউন্ডেশন ফান্ড</div>
       <div class="header-sub">১০০% আমানাহ ও রিয়েল-টাইম ট্র্যাকিং</div>
-      <div class="live-counter-card">
-        <span style="font-size: 0.85rem;">সর্বমোট অনুমোদিত সংগ্রহ:</span>
-        <strong style="font-size: 1.2rem; color: var(--gold);" id="totalAmountCounter">৳ ০</strong>
+      
+      <div class="counter-grid">
+        <div class="counter-card">
+          <span class="counter-label">আজকের মোট সংগ্রহ</span>
+          <div class="counter-value" id="dailyAmountCounter">৳ ০</div>
+        </div>
+        <div class="counter-card">
+          <span class="counter-label">সর্বমোট সংগ্রহ</span>
+          <div class="counter-value" id="totalAmountCounter">৳ ০</div>
+        </div>
       </div>
     </header>
 
     <main class="app-content">
       
-      <!-- Track Donation Box -->
-      <div class="app-card" style="background: var(--gold-light); border: 1px solid #fef08a;">
-        <h3 style="font-size: 0.95rem; color: #854d0e; margin-bottom: 0.5rem; font-weight: 700;">🔍 আপনার অনুদান ট্র্যাক করুন</h3>
+      <!-- Islamic Success Message Card -->
+      <div id="successMsgCard" class="success-box">
+        <h4>جَزَاكَ ٱللَّٰهُ خَيْرًا (জাজাকাল্লাহু খাইরান)</h4>
+        <p>আল্লাহ তাআলা আপনার এই দানকে কবুল করুন, আপনার রিজিক ও হায়াতে বরকত দান করুন এবং এটিকে পরকালের জন্য নাজাতের অসিলা বানিয়ে দিন। আমিন।</p>
+        <p style="font-size: 0.78rem; margin-top: 8px; color: #a16207;"><strong>স্ট্যাটাস:</strong> এডমিন যাচাই করার পর এটি লাইভ বোর্ডে যুক্ত হবে।</p>
+      </div>
+
+      <!-- Live Search & Tracking Box -->
+      <div class="app-card" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+        <h3 style="font-size: 0.95rem; color: var(--primary); margin-bottom: 0.5rem; font-weight: 700;">🔍 অনুদান ট্র্যাকিং করুন</h3>
         <div style="display: flex; gap: 6px;">
           <input type="text" id="trackInput" class="app-input" placeholder="আপনার Full TrxID বা নম্বর দিন">
-          <button style="background: var(--primary); color: white; border: none; padding: 0 1rem; border-radius: 10px; font-weight: 600;" onclick="trackDonation()">খুঁজুন</button>
+          <button style="background: var(--primary); color: white; border: none; padding: 0 1rem; border-radius: 10px; font-weight: 600; cursor: pointer;" onclick="trackDonation()">খুঁজুন</button>
         </div>
         <div id="trackResult" style="margin-top: 0.8rem;"></div>
       </div>
 
-      <!-- Donation Form -->
+      <!-- Donation Input Form -->
       <div class="app-card">
         <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem; font-weight: 700;">অনুদানের তথ্য জমা দিন</h3>
         <form id="donationForm">
           <div class="form-group">
             <label>আপনার নাম</label>
             <input type="text" id="donorName" class="app-input" placeholder="নাম লিখুন">
-            <label style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block;">
+            <label style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; display: block; cursor: pointer;">
               <input type="checkbox" id="isAnon"> বেনামী হিসেবে রাখতে টিক দিন
             </label>
           </div>
@@ -102,7 +134,7 @@
         </form>
       </div>
 
-      <!-- Approved Feed -->
+      <!-- Live Approved Feed -->
       <div class="app-card">
         <h3 style="font-size: 1rem; color: var(--primary); font-weight: 700; margin-bottom: 0.8rem;">অনুমোদিত লাইভ বোর্ড</h3>
         <div id="liveFeed"></div>
@@ -124,7 +156,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // Anonymous name handle
+    // Anonymous checkbox logic
     document.getElementById('isAnon').addEventListener('change', (e) => {
       const nameInput = document.getElementById('donorName');
       nameInput.disabled = e.target.checked;
@@ -168,7 +200,10 @@
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert('ধন্যবাদ! আপনার অনুদানটি সেভ হয়েছে। এডমিন যাচাই করে এপ্রুভ করার পর লাইভ বোর্ডে দেখাবে।');
+        // Display Islamic Message
+        document.getElementById('successMsgCard').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         document.getElementById('donationForm').reset();
       } catch (err) {
         alert('সমস্যা হয়েছে, পরে চেষ্টা করুন।');
@@ -195,7 +230,7 @@
       }
 
       if (snapshot.empty) {
-        resultDiv.innerHTML = '<span style="color:#b91c1c; font-size:0.85rem;">কোনো ডাটা পাওয়া যায়নি!</span>';
+        resultDiv.innerHTML = '<span style="color:#b91c1c; font-size:0.85rem;">কোনো তথ্য পাওয়া যায়নি!</span>';
         return;
       }
 
@@ -215,36 +250,50 @@
       resultDiv.innerHTML = html;
     }
 
-    // Live Approved Board
+    // Real-Time Live Feed & Counters
     db.collection('donations')
       .where('status', '==', 'approved')
       .orderBy('timestamp', 'desc')
       .onSnapshot((snapshot) => {
         const liveFeed = document.getElementById('liveFeed');
-        let total = 0;
+        let totalSum = 0;
+        let dailySum = 0;
+
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
 
         if (snapshot.empty) {
           liveFeed.innerHTML = '<p style="text-align:center; font-size:0.85rem; color: var(--text-muted);">কোনো অনুমোদিত অনুদান নেই।</p>';
           document.getElementById('totalAmountCounter').innerText = '৳ ০';
+          document.getElementById('dailyAmountCounter').innerText = '৳ ০';
           return;
         }
 
         liveFeed.innerHTML = '';
         snapshot.forEach(doc => {
           const data = doc.data();
-          total += data.amount || 0;
+          const amt = data.amount || 0;
+          totalSum += amt;
+
+          if (data.timestamp && data.timestamp.toDate() >= startOfToday) {
+            dailySum += amt;
+          }
+
           liveFeed.innerHTML += `
             <div class="feed-item">
               <div>
                 <strong>${data.name}</strong>
                 <div style="font-size:0.75rem; color:var(--text-muted);">TrxID: ${data.maskedTrxId}</div>
               </div>
-              <div class="amount-badge">৳ ${data.amount}</div>
+              <div class="amount-badge">৳ ${amt}</div>
             </div>
           `;
         });
-        document.getElementById('totalAmountCounter').innerText = `৳ ${total.toLocaleString('bn-BD')}`;
+
+        document.getElementById('totalAmountCounter').innerText = `৳ ${totalSum.toLocaleString('bn-BD')}`;
+        document.getElementById('dailyAmountCounter').innerText = `৳ ${dailySum.toLocaleString('bn-BD')}`;
       });
   </script>
 </body>
-</html>
+  </html>
+  
