@@ -38,6 +38,46 @@
     .app-content { padding: 1rem 1rem 4rem; flex: 1; }
     .app-card { background: var(--card-bg); border-radius: 16px; padding: 1.2rem; box-shadow: var(--shadow-app); margin-bottom: 1rem; border: 1px solid #e5e7eb; }
 
+    /* Payment Card Style */
+    .payment-card {
+      background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%);
+      border: 1.5px solid #fbcfe8;
+      border-radius: 16px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-app);
+    }
+    .payment-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 6px;
+      margin-right: 4px;
+    }
+    .badge-bkash { background: #e11d48; color: white; }
+    .badge-nagad { background: #f97316; color: white; }
+    .number-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      border: 1.5px dashed #f43f5e;
+      padding: 0.6rem 0.9rem;
+      border-radius: 10px;
+      margin-top: 0.6rem;
+    }
+    .copy-btn {
+      background: #f43f5e;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
     .form-group { margin-bottom: 0.9rem; }
     .form-group label { font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; display: block; }
     .app-input { width: 100%; padding: 0.8rem 0.9rem; font-size: 0.9rem; border: 1.5px solid #e5e7eb; border-radius: 10px; outline: none; }
@@ -45,7 +85,6 @@
 
     .btn-app { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; font-size: 0.95rem; font-weight: 600; padding: 0.85rem; border: none; border-radius: 12px; cursor: pointer; }
 
-    /* Success Modal / Message Box */
     .success-box {
       display: none;
       background: var(--gold-light);
@@ -107,6 +146,22 @@
         <div id="trackResult" style="margin-top: 0.8rem;"></div>
       </div>
 
+      <!-- Payment Method Card -->
+      <div class="payment-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <span class="payment-badge badge-bkash">bKash</span>
+            <span class="payment-badge badge-nagad">Nagad</span>
+          </div>
+          <span style="font-size: 0.75rem; color: #be123c; font-weight: 600;">Personal / Send Money</span>
+        </div>
+        <div class="number-box">
+          <strong id="payNumber" style="font-size: 1.1rem; color: #881337; letter-spacing: 0.5px;">01603785413</strong>
+          <button class="copy-btn" onclick="copyNumber()">কপি করুন</button>
+        </div>
+        <p style="font-size: 0.75rem; color: #9f1239; margin-top: 6px;">* উপরের নম্বরে Send Money করার পর নিচে অনুদানের তথ্য জমা দিন।</p>
+      </div>
+
       <!-- Donation Input Form -->
       <div class="app-card">
         <h3 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.8rem; font-weight: 700;">অনুদানের তথ্য জমা দিন</h3>
@@ -155,6 +210,13 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    // Copy Payment Number Logic
+    function copyNumber() {
+      const num = document.getElementById('payNumber').innerText;
+      navigator.clipboard.writeText(num);
+      alert('নম্বর কপি করা হয়েছে: ' + num);
+    }
 
     // Anonymous checkbox logic
     document.getElementById('isAnon').addEventListener('change', (e) => {
@@ -295,5 +357,5 @@
       });
   </script>
 </body>
-  </html>
-  
+              </html>
+            
