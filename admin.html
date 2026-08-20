@@ -2,11 +2,10 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>এডমিন প্যানেল - ইসলামিক ফাউন্ডেশন</title>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
   
-  <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -17,120 +16,63 @@
       --card-bg: #ffffff;
       --primary: #0a3225;
       --primary-light: #134e3b;
-      --gold: #d4af37;
-      --danger: #dc2626;
-      --success: #16a34a;
       --text-main: #111827;
       --text-muted: #6b7280;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; min-height: 100vh; padding: 1rem; }
-
+    body { background: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; padding: 1rem; }
     .app-viewport { width: 100%; max-width: 480px; }
 
-    /* Login View */
-    .login-card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 2rem 1.5rem;
-      box-shadow: 0 10px 30px rgba(10, 50, 37, 0.08);
-      margin-top: 3rem;
-      border: 1px solid #e5e7eb;
-    }
+    .login-card { background: white; border-radius: 16px; padding: 1.5rem; border: 1px solid #e5e7eb; margin-top: 2rem; }
+    .app-input { width: 100%; padding: 0.8rem; font-size: 0.9rem; border: 1.5px solid #e5e7eb; border-radius: 10px; margin-top: 4px; margin-bottom: 12px; }
+    .btn-primary { width: 100%; background: var(--primary); color: white; padding: 0.8rem; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
 
-    .login-header { text-align: center; margin-bottom: 1.5rem; }
-    .login-header h2 { color: var(--primary); font-size: 1.3rem; }
-
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; display: block; }
-    .app-input {
-      width: 100%;
-      padding: 0.8rem 1rem;
-      font-size: 0.95rem;
-      border: 1.5px solid #e5e7eb;
-      border-radius: 12px;
-      outline: none;
-    }
-    .app-input:focus { border-color: var(--primary); }
-
-    .btn-primary {
-      width: 100%;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: white;
-      padding: 0.85rem;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    /* Dashboard View */
-    .admin-header {
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      color: white;
-      padding: 1.5rem;
-      border-radius: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.2rem;
-    }
-
-    .btn-logout { background: rgba(255,255,255,0.2); color: white; border: none; padding: 4px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
-
-    .item-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 1.2rem;
-      margin-bottom: 1rem;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    }
-
-    .trx-box { background: #fef3c7; color: #92400e; font-weight: 700; padding: 2px 8px; border-radius: 6px; font-size: 0.85rem; }
+    .admin-header { background: var(--primary); color: white; padding: 1rem; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
     
-    .btn-group { display: flex; gap: 8px; margin-top: 1rem; }
-    .btn-approve { flex: 1; background: var(--success); color: white; border: none; padding: 0.6rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
-    .btn-reject { flex: 1; background: var(--danger); color: white; border: none; padding: 0.6rem; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    .tab-group { display: flex; gap: 6px; margin-bottom: 1rem; }
+    .tab-btn { flex: 1; padding: 8px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .item-card { background: white; padding: 1rem; border-radius: 12px; border: 1px solid #e5e7eb; margin-bottom: 0.8rem; }
+    .trx-box { background: #fef3c7; color: #92400e; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+    
+    .btn-action { padding: 6px 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.8rem; flex: 1; }
+    .btn-approve { background: #16a34a; color: white; }
+    .btn-reject { background: #dc2626; color: white; }
   </style>
 </head>
 <body>
 
   <div class="app-viewport">
     
-    <!-- Login Screen -->
+    <!-- Login Form -->
     <div id="loginScreen" class="login-card">
-      <div class="login-header">
-        <h2>এডমিন প্যানেল লগইন</h2>
-        <p style="font-size: 0.8rem; color: var(--text-muted);">শুধুমাত্র অনুমোদিত এডমিনদের জন্য</p>
-      </div>
+      <h3 style="color: var(--primary); text-align: center; margin-bottom: 1rem;">এডমিন প্যানেল লগইন</h3>
       <form id="loginForm">
-        <div class="form-group">
-          <label>এডমিন ইমেইল</label>
-          <input type="email" id="email" class="app-input" required placeholder="admin@example.com">
-        </div>
-        <div class="form-group">
-          <label>পাসওয়ার্ড</label>
-          <input type="password" id="password" class="app-input" required placeholder="••••••••">
-        </div>
-        <button type="submit" class="btn-primary" id="loginBtn">লগইন করুন</button>
+        <label style="font-size: 0.8rem;">ইমেইল</label>
+        <input type="email" id="email" class="app-input" required>
+        <label style="font-size: 0.8rem;">পাসওয়ার্ড</label>
+        <input type="password" id="password" class="app-input" required>
+        <button type="submit" class="btn-primary">লগইন</button>
       </form>
     </div>
 
-    <!-- Admin Dashboard Screen -->
+    <!-- Dashboard -->
     <div id="dashboardScreen" style="display: none;">
       <div class="admin-header">
-        <div>
-          <h3 style="font-size: 1.1rem;">পেন্ডিং অনুদানসমূহ</h3>
-          <p style="font-size: 0.78rem; opacity: 0.8;">যাচাই করে এপ্রুভ করুন</p>
-        </div>
-        <button class="btn-logout" onclick="logout()">লগআউট</button>
+        <div><strong>এডমিন ড্যাশবোর্ড</strong></div>
+        <button style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem;" onclick="auth.signOut()">লগআউট</button>
       </div>
 
-      <div id="pendingList">
-        <p style="text-align: center; color: var(--text-muted); padding: 1rem;">ডাটা লোড হচ্ছে...</p>
+      <!-- Navigation Tabs -->
+      <div class="tab-group">
+        <button class="tab-btn active" id="tabPending" onclick="switchTab('pending')">Pending</button>
+        <button class="tab-btn" id="tabApproved" onclick="switchTab('approved')">Approved</button>
+        <button class="tab-btn" id="tabRejected" onclick="switchTab('rejected')">Rejected</button>
       </div>
+
+      <div id="dataList"></div>
     </div>
 
   </div>
@@ -149,86 +91,91 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // Check Auth State
+    let currentTab = 'pending';
+
     auth.onAuthStateChanged((user) => {
       if (user) {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('dashboardScreen').style.display = 'block';
-        loadPendingDonations();
+        loadData(currentTab);
       } else {
         document.getElementById('loginScreen').style.display = 'block';
         document.getElementById('dashboardScreen').style.display = 'none';
       }
     });
 
-    // Login Handle
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const btn = document.getElementById('loginBtn');
-
-      btn.innerText = 'লগইন হচ্ছে...';
       try {
-        await auth.signInWithEmailAndPassword(email, password);
-      } catch (error) {
-        alert('ইমেইল বা পাসওয়ার্ড ভুল হয়েছে!');
-      } finally {
-        btn.innerText = 'লগইন করুন';
+        await auth.signInWithEmailAndPassword(
+          document.getElementById('email').value.trim(),
+          document.getElementById('password').value
+        );
+      } catch (err) {
+        alert('লগইন ব্যর্থ হয়েছে!');
       }
     });
 
-    // Logout Handle
-    function logout() {
-      auth.signOut();
+    function switchTab(status) {
+      currentTab = status;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab' + status.charAt(0).toUpperCase() + status.slice(1)).classList.add('active');
+      loadData(status);
     }
 
-    // Load Pending Items Realtime
-    function loadPendingDonations() {
+    function loadData(status) {
       db.collection('donations')
-        .where('status', '==', 'pending')
+        .where('status', '==', status)
         .onSnapshot((snapshot) => {
-          const list = document.getElementById('pendingList');
+          const list = document.getElementById('dataList');
           if (snapshot.empty) {
-            list.innerHTML = '<p style="text-align: center; color: var(--text-muted); background: white; padding: 1.5rem; border-radius: 16px;">কোনো পেন্ডিং অনুদান নেই।</p>';
+            list.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 1rem;">${status.toUpperCase()} কোনো ডাটা নেই।</p>`;
             return;
           }
 
           list.innerHTML = '';
-          snapshot.forEach((doc) => {
+          snapshot.forEach(doc => {
             const data = doc.data();
-            const item = document.createElement('div');
-            item.className = 'item-card';
-            item.innerHTML = `
-              <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                <strong style="color: var(--primary);">${data.name}</strong>
-                <strong style="color: var(--success); font-size: 1.1rem;">৳ ${data.amount}</strong>
-              </div>
-              <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;">
-                মোবাইল: ${data.maskedPhone}<br>
-                TrxID (যাচাইয়ের জন্য): <span class="trx-box">${data.fullTrxId}</span>
-              </div>
-              <div class="btn-group">
-                <button class="btn-approve" onclick="approveDonation('${doc.id}')">Approve</button>
-                <button class="btn-reject" onclick="rejectDonation('${doc.id}')">Reject</button>
+            
+            let buttons = '';
+            if (status === 'pending') {
+              buttons = `
+                <div style="display: flex; gap: 6px; margin-top: 8px;">
+                  <button class="btn-action btn-approve" onclick="updateStatus('${doc.id}', 'approved')">Approve</button>
+                  <button class="btn-action btn-reject" onclick="updateStatus('${doc.id}', 'rejected')">Reject</button>
+                </div>
+              `;
+            } else if (status === 'rejected') {
+              buttons = `
+                <div style="display: flex; gap: 6px; margin-top: 8px;">
+                  <button class="btn-action btn-approve" onclick="updateStatus('${doc.id}', 'approved')">Re-Approve</button>
+                </div>
+              `;
+            }
+
+            list.innerHTML += `
+              <div class="item-card">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong>${data.name}</strong>
+                  <strong style="color: green;">৳${data.amount}</strong>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                  TrxID: <span class="trx-box">${data.fullTrxId}</span><br>
+                  Phone: ${data.rawPhone || data.maskedPhone}
+                </div>
+                ${buttons}
               </div>
             `;
-            list.appendChild(item);
           });
         });
     }
 
-    async function approveDonation(id) {
-      if (confirm('অনুদানটি লাইভ বোর্ডে অনুমোদন দিতে চান?')) {
-        await db.collection('donations').doc(id).update({ status: 'approved' });
-      }
-    }
-
-    async function rejectDonation(id) {
-      if (confirm('অনুদানটি বাতিল করতে চান?')) {
-        await db.collection('donations').doc(id).delete();
+    async function updateStatus(id, newStatus) {
+      if (confirm(`স্ট্যাটাস পরিবর্তন করে ${newStatus.toUpperCase()} করতে চান?`)) {
+        await db.collection('donations').doc(id).update({ status: newStatus });
       }
     }
   </script>
 </body>
-</html>
+  </html>
+  
